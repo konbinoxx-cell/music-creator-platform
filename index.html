@@ -451,34 +451,27 @@
                 });
             }
 
-            createPianoKeyboard() {
+createPianoKeyboard() {
     const pianoKeys = document.getElementById('pianoKeys');
     pianoKeys.innerHTML = '';
     
-    // 简化的钢琴键盘创建 - 确保黑键位置正确
-    const notes = [
-        'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
-        'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 
-        'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
-        'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
+    // 只创建白键，然后在正确位置添加黑键
+    const whiteNotes = [
+        'C2', 'D2', 'E2', 'F2', 'G2', 'A2', 'B2',
+        'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
+        'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+        'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5',
         'C6'
     ];
     
-    let whiteKeyCount = 0;
-    
-    notes.forEach((noteName, index) => {
-        const isBlack = this.isBlackKey(noteName);
+    // 先创建所有白键
+    whiteNotes.forEach((noteName, index) => {
         const key = document.createElement('div');
-        key.className = `piano-key ${isBlack ? 'black' : 'white'}`;
+        key.className = 'piano-key white';
         key.dataset.note = noteName;
         
-        if (!isBlack) {
-            // 白键 - 顺序排列
-            whiteKeyCount++;
-        } else {
-            // 黑键 - 精确定位在白键之间
-            const blackKeyOffset = this.getBlackKeyOffset(noteName);
-            key.style.left = `calc(${((whiteKeyCount - 1) * 100 / 28)}% + ${blackKeyOffset}px)`;
+        if (noteName === 'C4') {
+            key.classList.add('key-middle-c');
         }
         
         const label = document.createElement('div');
@@ -487,6 +480,36 @@
         key.appendChild(label);
         
         this.addKeyEvents(key, noteName);
+        pianoKeys.appendChild(key);
+    });
+    
+    // 然后在正确位置添加黑键
+    const blackNotes = [
+        {note: 'C#2', position: 0}, {note: 'D#2', position: 1},
+        {note: 'F#2', position: 3}, {note: 'G#2', position: 4}, {note: 'A#2', position: 5},
+        {note: 'C#3', position: 7}, {note: 'D#3', position: 8},
+        {note: 'F#3', position: 10}, {note: 'G#3', position: 11}, {note: 'A#3', position: 12},
+        {note: 'C#4', position: 14}, {note: 'D#4', position: 15},
+        {note: 'F#4', position: 17}, {note: 'G#4', position: 18}, {note: 'A#4', position: 19},
+        {note: 'C#5', position: 21}, {note: 'D#5', position: 22},
+        {note: 'F#5', position: 24}, {note: 'G#5', position: 25}, {note: 'A#5', position: 26}
+    ];
+    
+    blackNotes.forEach(blackNote => {
+        const key = document.createElement('div');
+        key.className = 'piano-key black';
+        key.dataset.note = blackNote.note;
+        
+        // 简单直接的位置计算：每个白键宽度约3.5%，黑键偏移量固定
+        const leftPosition = (blackNote.position * 3.57) + 2.2;
+        key.style.left = `${leftPosition}%`;
+        
+        const label = document.createElement('div');
+        label.className = 'key-label';
+        label.textContent = blackNote.note;
+        key.appendChild(label);
+        
+        this.addKeyEvents(key, blackNote.note);
         pianoKeys.appendChild(key);
     });
 }
