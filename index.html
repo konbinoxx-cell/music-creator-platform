@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎵 专业音乐创作平台</title>
+    <title>🎵 Professional Music Creator 专业音乐创作平台</title>
     <style>
         * {
             margin: 0;
@@ -138,27 +138,63 @@
 
         .staff-note {
             position: absolute;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             background: #e74c3c;
             border-radius: 50%;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 7px;
+            font-size: 8px;
             cursor: pointer;
             transform: translate(-50%, -50%);
             z-index: 10;
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            transition: all 0.2s;
         }
 
-        /* 钢琴键盘区域 */
+        .staff-note:hover {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .staff-note:hover::after {
+            content: 'Double click to delete 双击删除';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            white-space: nowrap;
+            z-index: 100;
+        }
+
+        /* 中央C标记 */
+        .middle-c-marker {
+            position: absolute;
+            left: 10px;
+            top: 80%;
+            transform: translateY(-50%);
+            background: #e74c3c;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 5;
+        }
+
+        /* 钢琴键盘区域 - 降低高度 */
         .piano-section {
-            flex: 1;
-            background: #2c3e50;
+            flex: 0 0 140px; /* 降低键盘高度 */
+            background: #1a1a1a;
             position: relative;
             overflow: hidden;
+            border-top: 3px solid #8B4513;
         }
 
         .piano-container {
@@ -166,54 +202,75 @@
             height: 100%;
             position: relative;
             overflow-x: auto;
+            padding: 0 10px;
         }
 
         .piano-keys {
             display: flex;
             height: 100%;
-            min-width: 1200px;
+            min-width: 800px; /* 减少键数对应的宽度 */
             position: relative;
+            margin: 0 auto;
+            max-width: 1200px;
         }
 
-        .piano-key {
+        /* 白键样式 */
+        .piano-key.white {
             position: relative;
             flex: 1;
-            border: 1px solid #34495e;
-            background: white;
+            background: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%);
+            border: 1px solid #ccc;
+            border-radius: 0 0 4px 4px;
             cursor: pointer;
-            transition: background 0.1s;
-        }
-
-        .piano-key.black {
-            background: #2c3e50;
-            height: 65%;
-            width: 60%;
-            margin-left: -30%;
-            margin-right: -30%;
-            z-index: 2;
-            border: 1px solid #000;
+            transition: all 0.1s;
+            margin: 0 1px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .piano-key.white.active {
-            background: #3498db;
+            background: linear-gradient(to bottom, #3498db 0%, #2980b9 100%);
+            transform: translateY(2px);
+        }
+
+        /* 黑键样式 */
+        .piano-key.black {
+            position: absolute;
+            height: 65%;
+            width: 7%;
+            background: linear-gradient(to bottom, #333 0%, #000 100%);
+            z-index: 2;
+            border: 1px solid #000;
+            border-radius: 0 0 3px 3px;
+            cursor: pointer;
+            transition: all 0.1s;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
         }
 
         .piano-key.black.active {
-            background: #e74c3c;
+            background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 100%);
+            transform: translateY(1px);
         }
 
         .key-label {
             position: absolute;
-            bottom: 5px;
+            bottom: 8px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 10px;
-            color: #7f8c8d;
+            color: #666;
+            pointer-events: none;
         }
 
         .black .key-label {
-            color: #bdc3c7;
-            bottom: 3px;
+            color: #bbb;
+            bottom: 6px;
+            font-size: 9px;
+        }
+
+        /* 中央C特殊标记 */
+        .key-middle-c .key-label {
+            color: #e74c3c;
+            font-weight: bold;
         }
 
         /* 侧边控制栏 */
@@ -239,6 +296,9 @@
             writing-mode: vertical-rl;
             text-orientation: mixed;
             min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .side-btn.record {
@@ -289,6 +349,10 @@
                 min-height: 60px;
                 font-size: 10px;
             }
+
+            .piano-section {
+                flex: 0 0 120px;
+            }
         }
     </style>
 </head>
@@ -296,17 +360,17 @@
     <div class="container">
         <!-- 顶部紧凑控制栏 -->
         <div class="top-controls">
-            <div class="logo">🎵 音乐创作</div>
+            <div class="logo">🎵 Music Creator 音乐创作</div>
             <div class="compact-presets">
-                <button class="preset-btn active" data-style="happy">😊</button>
-                <button class="preset-btn" data-style="calm">🌊</button>
-                <button class="preset-btn" data-style="mystery">🔮</button>
-                <button class="preset-btn" data-style="energy">⚡</button>
+                <button class="preset-btn active" data-style="happy">😊 Happy 欢快</button>
+                <button class="preset-btn" data-style="calm">🌊 Calm 平静</button>
+                <button class="preset-btn" data-style="mystery">🔮 Mystery 神秘</button>
+                <button class="preset-btn" data-style="energy">⚡ Energy 活力</button>
             </div>
             <div class="top-right-controls">
-                <button class="mini-btn" id="clearStaff">清空</button>
-                <button class="mini-btn" id="analyzeMelody">分析</button>
-                <button class="mini-btn" id="generateFromMelody">智能伴奏</button>
+                <button class="mini-btn" id="clearStaff">Clear 清空</button>
+                <button class="mini-btn" id="analyzeMelody">Analyze 分析</button>
+                <button class="mini-btn" id="generateFromMelody">Auto Accompany 智能伴奏</button>
             </div>
         </div>
 
@@ -320,12 +384,14 @@
                         <div class="staff-line"></div>
                         <div class="staff-line"></div>
                         <div class="staff-line"></div>
+                        <!-- 中央C标记 -->
+                        <div class="middle-c-marker">Middle C 中央C</div>
                         <!-- 小节线和音符动态添加 -->
                     </div>
                 </div>
             </div>
 
-            <!-- 钢琴键盘区域 -->
+            <!-- 钢琴键盘区域 - 降低高度 -->
             <div class="piano-section">
                 <div class="piano-container">
                     <div class="piano-keys" id="pianoKeys">
@@ -337,16 +403,16 @@
 
         <!-- 侧边控制按钮 -->
         <div class="side-controls">
-            <button class="side-btn" id="playStaff">播放</button>
-            <button class="side-btn" id="stopBtn">停止</button>
-            <button class="side-btn record" id="recordBtn">录音</button>
-            <button class="side-btn export" id="exportBtn" disabled>导出</button>
+            <button class="side-btn" id="playStaff">Play 播放</button>
+            <button class="side-btn" id="stopBtn">Stop 停止</button>
+            <button class="side-btn record" id="recordBtn">Record 录音</button>
+            <button class="side-btn export" id="exportBtn" disabled>Export 导出</button>
         </div>
 
         <!-- 底部状态栏 -->
         <div class="status-bar">
-            <div id="statusText">准备就绪 - 在钢琴键盘上弹奏，音符会自动出现在五线谱上</div>
-            <div class="loading" id="loading" style="display: none;">生成中...</div>
+            <div id="statusText">Ready - Play on piano keyboard, notes will appear on staff 准备就绪 - 在钢琴键盘上弹奏，音符会自动出现在五线谱上</div>
+            <div class="loading" id="loading" style="display: none;">Generating... 生成中...</div>
         </div>
     </div>
 
@@ -363,8 +429,8 @@
                 this.staffNotes = [];
                 this.measures = [];
                 this.measureWidth = 200;
-                this.currentX = 50; // 当前音符的X位置
-                this.noteSpacing = 30; // 音符间距
+                this.currentX = 50;
+                this.noteSpacing = 30;
                 
                 this.initializeEventListeners();
                 this.setupStaff();
@@ -375,7 +441,6 @@
             setupStaff() {
                 const staff = document.getElementById('staff');
                 
-                // 点击五线谱也可以添加音符（备用）
                 staff.addEventListener('click', (e) => {
                     if (e.target.classList.contains('staff-line') || e.target === staff) {
                         const rect = staff.getBoundingClientRect();
@@ -390,41 +455,118 @@
                 const pianoKeys = document.getElementById('pianoKeys');
                 pianoKeys.innerHTML = '';
                 
-                // 创建61键钢琴 (C2-C7)
+                // 创建49键钢琴 (C2-C6) - 更合理的键数
                 const startNote = 36; // C2
-                const endNote = 96;   // C7
+                const endNote = 84;   // C6
+                
+                let whiteKeyCount = 0;
                 
                 for (let noteNumber = startNote; noteNumber <= endNote; noteNumber++) {
                     const noteName = this.numberToNote(noteNumber);
                     const isBlack = this.isBlackKey(noteName);
                     
-                    const key = document.createElement('div');
-                    key.className = `piano-key ${isBlack ? 'black' : 'white'}`;
-                    key.dataset.note = noteName;
-                    key.dataset.number = noteNumber;
-                    
-                    // 添加键位标签
-                    const label = document.createElement('div');
-                    label.className = 'key-label';
-                    label.textContent = noteName;
-                    key.appendChild(label);
-                    
-                    // 点击事件
-                    key.addEventListener('mousedown', (e) => {
-                        e.preventDefault();
-                        this.playPianoKey(noteName, key);
-                    });
-                    
-                    key.addEventListener('mouseup', () => {
-                        key.classList.remove('active');
-                    });
-                    
-                    key.addEventListener('mouseleave', () => {
-                        key.classList.remove('active');
-                    });
-                    
-                    pianoKeys.appendChild(key);
+                    if (!isBlack) {
+                        // 创建白键
+                        const key = document.createElement('div');
+                        key.className = `piano-key white`;
+                        key.dataset.note = noteName;
+                        key.dataset.number = noteNumber;
+                        
+                        // 标记中央C
+                        if (noteName === 'C4') {
+                            key.classList.add('key-middle-c');
+                        }
+                        
+                        // 添加键位标签
+                        const label = document.createElement('div');
+                        label.className = 'key-label';
+                        label.textContent = noteName;
+                        key.appendChild(label);
+                        
+                        // 事件监听
+                        this.addKeyEvents(key, noteName);
+                        
+                        pianoKeys.appendChild(key);
+                        whiteKeyCount++;
+                    }
                 }
+                
+                // 创建黑键（在白键之上）
+                for (let noteNumber = startNote; noteNumber <= endNote; noteNumber++) {
+                    const noteName = this.numberToNote(noteNumber);
+                    const isBlack = this.isBlackKey(noteName);
+                    
+                    if (isBlack) {
+                        const key = document.createElement('div');
+                        key.className = `piano-key black`;
+                        key.dataset.note = noteName;
+                        key.dataset.number = noteNumber;
+                        
+                        // 计算黑键位置
+                        const whiteKeyIndex = this.getWhiteKeyIndex(noteNumber);
+                        const position = (whiteKeyIndex * 100 / whiteKeyCount) - 3.5;
+                        key.style.left = `calc(${position}% + 10px)`;
+                        
+                        // 添加键位标签
+                        const label = document.createElement('div');
+                        label.className = 'key-label';
+                        label.textContent = noteName;
+                        key.appendChild(label);
+                        
+                        // 事件监听
+                        this.addKeyEvents(key, noteName);
+                        
+                        pianoKeys.appendChild(key);
+                    }
+                }
+            }
+
+            getWhiteKeyIndex(noteNumber) {
+                // 计算黑键对应的白键索引
+                const octaveNotes = [0, 2, 4, 5, 7, 9, 11]; // 白键在八度内的位置
+                const octave = Math.floor(noteNumber / 12) - 1;
+                const noteInOctave = noteNumber % 12;
+                
+                let whiteKeyIndex = 0;
+                for (let i = 0; i < octave; i++) {
+                    whiteKeyIndex += 7; // 每个八度7个白键
+                }
+                
+                // 找到当前音符之前的白键数量
+                for (let i = 0; i < octaveNotes.length; i++) {
+                    if (octaveNotes[i] < noteInOctave) {
+                        whiteKeyIndex++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                return whiteKeyIndex;
+            }
+
+            addKeyEvents(key, noteName) {
+                key.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    this.playPianoKey(noteName, key);
+                });
+                
+                key.addEventListener('mouseup', () => {
+                    key.classList.remove('active');
+                });
+                
+                key.addEventListener('mouseleave', () => {
+                    key.classList.remove('active');
+                });
+                
+                // 触摸设备支持
+                key.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    this.playPianoKey(noteName, key);
+                });
+                
+                key.addEventListener('touchend', () => {
+                    key.classList.remove('active');
+                });
             }
 
             numberToNote(number) {
@@ -454,12 +596,12 @@
                 // 计算音符在五线谱上的Y位置
                 const noteNumber = this.noteToNumber(noteName);
                 const minNote = 48; // C3
-                const maxNote = 84; // C6 (在五线谱显示范围内的音符)
+                const maxNote = 84; // C6
                 
                 if (noteNumber >= minNote && noteNumber <= maxNote) {
                     const noteRange = maxNote - minNote;
                     const relativePosition = (noteNumber - minNote) / noteRange;
-                    const y = staffHeight * (1 - relativePosition * 0.8 - 0.1); // 在中间80%区域显示
+                    const y = staffHeight * (1 - relativePosition * 0.8 - 0.1);
                     
                     this.createNoteElement(noteName, this.currentX, y);
                     this.currentX += this.noteSpacing;
@@ -468,6 +610,10 @@
                     if (this.currentX > (this.measures.length * this.measureWidth - 50)) {
                         this.addNewMeasure();
                     }
+                    
+                    this.updateStatus(`Added note: ${noteName} 添加音符: ${noteName}`);
+                } else {
+                    this.updateStatus(`Note ${noteName} is outside staff range 音符 ${noteName} 超出五线谱范围`);
                 }
             }
 
@@ -487,13 +633,13 @@
                 });
                 
                 this.createNoteElement(closestNote.note, x, y);
+                this.updateStatus(`Added note: ${closestNote.note} 添加音符: ${closestNote.note}`);
             }
 
             getNotePositions() {
                 const staff = document.getElementById('staff');
                 const staffHeight = staff.offsetHeight;
                 
-                // 定义在五线谱上显示的音符范围 (C3-C6)
                 const notes = [
                     'C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5',
                     'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4',
@@ -515,7 +661,15 @@
                 const staff = document.getElementById('staff');
                 const noteElement = document.createElement('div');
                 noteElement.className = 'staff-note';
-                noteElement.textContent = note.replace(/\d/, '').replace('#', '♯');
+                
+                if (note === 'C4') {
+                    noteElement.textContent = 'C';
+                    noteElement.style.background = '#e74c3c';
+                    noteElement.title = 'Middle C 中央C';
+                } else {
+                    noteElement.textContent = note.replace(/\d/, '').replace('#', '♯');
+                }
+                
                 noteElement.style.left = x + 'px';
                 noteElement.style.top = y + 'px';
                 noteElement.dataset.note = note;
@@ -524,6 +678,7 @@
                     e.stopPropagation();
                     noteElement.remove();
                     this.staffNotes = this.staffNotes.filter(n => n.element !== noteElement);
+                    this.updateStatus(`Deleted note: ${note} 删除音符: ${note}`);
                 });
                 
                 noteElement.addEventListener('click', (e) => {
@@ -561,6 +716,7 @@
                 const lastMeasurePos = this.measures.length * this.measureWidth;
                 this.addMeasureLine(lastMeasurePos);
                 this.updateStaffWidth();
+                this.updateStatus(`Added measure ${this.measures.length} 添加第${this.measures.length}小节`);
             }
 
             updateStaffWidth() {
@@ -580,11 +736,19 @@
             }
 
             initializeEventListeners() {
-                // 预设按钮
+                // ... 事件监听代码保持不变 ...
                 document.querySelectorAll('.preset-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
                         e.target.classList.add('active');
+                        const style = e.target.dataset.style;
+                        const styleNames = {
+                            'happy': 'Happy 欢快',
+                            'calm': 'Calm 平静', 
+                            'mystery': 'Mystery 神秘',
+                            'energy': 'Energy 活力'
+                        };
+                        this.updateStatus(`Style set to: ${styleNames[style]} 风格设置为: ${styleNames[style]}`);
                     });
                 });
 
@@ -592,7 +756,7 @@
                     document.querySelectorAll('.staff-note').forEach(note => note.remove());
                     this.staffNotes = [];
                     this.currentX = 50;
-                    this.updateStatus('乐谱已清空');
+                    this.updateStatus('Staff cleared 乐谱已清空');
                 });
 
                 document.getElementById('playStaff').addEventListener('click', () => {
@@ -618,11 +782,22 @@
                 document.getElementById('exportBtn').addEventListener('click', () => {
                     this.exportAudio();
                 });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        if (this.isPlaying) {
+                            this.stopMusic();
+                        } else {
+                            this.playStaff();
+                        }
+                    }
+                });
             }
 
             analyzeMelody() {
                 if (this.staffNotes.length === 0) {
-                    this.updateStatus('请先在钢琴上弹奏一些音符！');
+                    this.updateStatus('Please play some notes on the piano first! 请先在钢琴上弹奏一些音符！');
                     return;
                 }
 
@@ -641,7 +816,14 @@
                     }
                 });
                 
-                this.updateStatus(`分析完成: ${this.getStyleName(style)}风格`);
+                const styleNames = {
+                    'happy': 'Happy 欢快',
+                    'calm': 'Calm 平静',
+                    'mystery': 'Mystery 神秘', 
+                    'energy': 'Energy 活力'
+                };
+                
+                this.updateStatus(`Analysis complete: ${styleNames[style]} style 分析完成: ${styleNames[style]}风格`);
             }
 
             hasMinorFeel(notes) {
@@ -656,24 +838,19 @@
                 return false;
             }
 
-            getStyleName(style) {
-                const names = { 'happy': '欢快', 'calm': '平静', 'mystery': '神秘', 'energy': '活力' };
-                return names[style] || '欢快';
-            }
-
             generateFromMelody() {
                 this.analyzeMelody();
-                this.updateStatus('生成智能伴奏...', true);
+                this.updateStatus('Generating intelligent accompaniment... 生成智能伴奏中...', true);
                 
                 setTimeout(() => {
-                    this.updateStatus('伴奏生成完成！');
+                    this.updateStatus('Accompaniment generated successfully! 伴奏生成完成！');
                     document.getElementById('exportBtn').disabled = false;
                 }, 1000);
             }
 
             playStaff() {
                 if (this.staffNotes.length === 0) {
-                    this.updateStatus('请先在钢琴上弹奏一些音符！');
+                    this.updateStatus('Please play some notes on the piano first! 请先在钢琴上弹奏一些音符！');
                     return;
                 }
 
@@ -686,19 +863,20 @@
                     this.synth.triggerAttackRelease(noteObj.note, "4n", time);
                 });
 
-                this.updateStatus('播放中...');
+                this.updateStatus('Playing... 播放中...');
                 this.isPlaying = true;
                 
                 const totalTime = Math.max(...sortedNotes.map(n => n.time)) * 2000 + 1000;
                 setTimeout(() => {
                     this.isPlaying = false;
-                    this.updateStatus('播放完成');
+                    this.updateStatus('Playback completed 播放完成');
                 }, totalTime);
             }
 
             stopMusic() {
                 this.isPlaying = false;
                 this.synth.releaseAll();
+                this.updateStatus('Playback stopped 播放已停止');
             }
 
             async toggleRecording() {
@@ -726,11 +904,11 @@
                     
                     this.mediaRecorder.start();
                     this.isRecording = true;
-                    document.getElementById('recordBtn').textContent = '停止录音';
-                    this.updateStatus('录音中...');
+                    document.getElementById('recordBtn').textContent = 'Stop 停止录音';
+                    this.updateStatus('Recording... 录音中...');
                     
                 } catch (error) {
-                    this.updateStatus('录音失败: ' + error.message);
+                    this.updateStatus('Recording failed: ' + error.message + ' 录音失败: ' + error.message);
                 }
             }
 
@@ -738,20 +916,20 @@
                 if (this.mediaRecorder && this.isRecording) {
                     this.mediaRecorder.stop();
                     this.isRecording = false;
-                    document.getElementById('recordBtn').textContent = '录音';
+                    document.getElementById('recordBtn').textContent = 'Record 录音';
                 }
             }
 
             finishRecording() {
                 const blob = new Blob(this.recordedChunks, { type: 'audio/webm' });
                 this.currentAudioUrl = URL.createObjectURL(blob);
-                this.updateStatus('录音完成，可以导出');
+                this.updateStatus('Recording completed, ready to export 录音完成，可以导出');
                 document.getElementById('exportBtn').disabled = false;
             }
 
             exportAudio() {
                 if (!this.currentAudioUrl) {
-                    this.updateStatus('没有可导出的音频');
+                    this.updateStatus('No audio to export 没有可导出的音频');
                     return;
                 }
 
@@ -762,9 +940,9 @@
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    this.updateStatus('文件下载中...');
+                    this.updateStatus('File downloading... 文件下载中...');
                 } catch (error) {
-                    this.updateStatus('导出失败: ' + error.message);
+                    this.updateStatus('Export failed: ' + error.message + ' 导出失败: ' + error.message);
                 }
             }
 
