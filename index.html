@@ -29,7 +29,7 @@
             overflow: hidden;
         }
 
-        /* 顶部控制栏 - 紧凑 */
+        /* 顶部控制栏 */
         .top-controls {
             display: grid;
             grid-template-columns: auto 1fr auto;
@@ -81,14 +81,14 @@
             font-size: 11px;
         }
 
-        /* 主内容区 - 五线谱 + 钢琴键盘 */
+        /* 主内容区 */
         .main-content {
             display: flex;
             flex-direction: column;
             height: 100%;
         }
 
-        /* 五线谱区域 - 高度适中 */
+        /* 五线谱区域 */
         .staff-section {
             flex: 0 0 180px;
             background: #ecf0f1;
@@ -109,7 +109,6 @@
             background: white;
         }
 
-        /* 五线谱线条 */
         .staff-line {
             position: absolute;
             left: 0;
@@ -173,7 +172,6 @@
             z-index: 100;
         }
 
-        /* 中央C标记 */
         .middle-c-marker {
             position: absolute;
             left: 10px;
@@ -188,89 +186,85 @@
             z-index: 5;
         }
 
-        /* 钢琴键盘区域 - 降低高度 */
+        /* 钢琴键盘区域 - 使用你提供的样式 */
         .piano-section {
             flex: 0 0 140px;
-            background: #1a1a1a;
+            background: #2c3e50;
+            border-radius: 10px;
+            padding: 10px;
+            margin: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             position: relative;
-            overflow: hidden;
-            border-top: 3px solid #8B4513;
-        }
-
-        .piano-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            overflow-x: auto;
-            padding: 0 10px;
-        }
-
-        .piano-keys {
             display: flex;
-            height: 100%;
-            min-width: 800px;
-            position: relative;
-            margin: 0 auto;
-            max-width: 1200px;
+            justify-content: center;
         }
-
-        /* 白键样式 */
-        .piano-key.white {
+        
+        .keys {
+            display: flex;
             position: relative;
-            flex: 1;
-            background: linear-gradient(to bottom, #fff 0%, #f8f8f8 100%);
-            border: 1px solid #ccc;
+            height: 100%;
+        }
+        
+        .white-key {
+            width: 42px;
+            height: 100%;
+            background: linear-gradient(to bottom, #ffffff 0%, #f0f0f0 100%);
+            border: 1px solid #888;
             border-radius: 0 0 4px 4px;
             cursor: pointer;
             transition: all 0.1s;
-            margin: 0 1px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-
-        .piano-key.white.active {
-            background: linear-gradient(to bottom, #3498db 0%, #2980b9 100%);
+        
+        .white-key:hover {
+            background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
+        }
+        
+        .white-key:active,
+        .white-key.active {
+            background: linear-gradient(to bottom, #e0e0e0 0%, #d0d0d0 100%);
             transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
-
-        /* 黑键样式 - 修复定位 */
-        .piano-key.black {
-            position: absolute;
-            height: 65%;
-            width: 7%;
-            background: linear-gradient(to bottom, #333 0%, #000 100%);
-            z-index: 2;
+        
+        .black-key {
+            width: 27px;
+            height: 60%;
+            background: linear-gradient(to bottom, #2c2c2c 0%, #000000 100%);
             border: 1px solid #000;
             border-radius: 0 0 3px 3px;
             cursor: pointer;
             transition: all 0.1s;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+            position: absolute;
+            z-index: 2;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.5);
         }
-
-        .piano-key.black.active {
-            background: linear-gradient(to bottom, #e74c3c 0%, #c0392b 100%);
-            transform: translateY(1px);
+        
+        .black-key:hover {
+            background: linear-gradient(to bottom, #3c3c3c 0%, #1c1c1c 100%);
         }
-
-        .key-label {
+        
+        .black-key:active,
+        .black-key.active {
+            background: linear-gradient(to bottom, #1c1c1c 0%, #0c0c0c 100%);
+            transform: translateY(2px);
+        }
+        
+        .note-label {
             position: absolute;
             bottom: 8px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 10px;
+            font-size: 11px;
             color: #666;
-            pointer-events: none;
+            user-select: none;
         }
-
-        .black .key-label {
-            color: #bbb;
-            bottom: 6px;
-            font-size: 9px;
-        }
-
-        /* 中央C特殊标记 */
-        .key-middle-c .key-label {
-            color: #e74c3c;
-            font-weight: bold;
+        
+        .black-key .note-label {
+            color: #999;
+            bottom: 5px;
+            font-size: 10px;
         }
 
         /* 侧边控制栏 */
@@ -328,37 +322,11 @@
             color: #3498db;
             margin-left: 10px;
         }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .top-controls {
-                grid-template-columns: 1fr;
-                gap: 5px;
-            }
-            
-            .compact-presets {
-                order: 2;
-            }
-            
-            .side-controls {
-                right: 5px;
-            }
-            
-            .side-btn {
-                padding: 8px 10px;
-                min-height: 60px;
-                font-size: 10px;
-            }
-
-            .piano-section {
-                flex: 0 0 120px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- 顶部紧凑控制栏 -->
+        <!-- 顶部控制栏 -->
         <div class="top-controls">
             <div class="logo">🎵 Music Creator 音乐创作</div>
             <div class="compact-presets">
@@ -384,20 +352,14 @@
                         <div class="staff-line"></div>
                         <div class="staff-line"></div>
                         <div class="staff-line"></div>
-                        <!-- 中央C标记 -->
                         <div class="middle-c-marker">Middle C 中央C</div>
-                        <!-- 小节线和音符动态添加 -->
                     </div>
                 </div>
             </div>
 
-            <!-- 钢琴键盘区域 - 降低高度 -->
+            <!-- 钢琴键盘区域 -->
             <div class="piano-section">
-                <div class="piano-container">
-                    <div class="piano-keys" id="pianoKeys">
-                        <!-- 钢琴键盘动态生成 -->
-                    </div>
-                </div>
+                <div class="keys" id="pianoKeys"></div>
             </div>
         </div>
 
@@ -451,179 +413,71 @@
                 });
             }
 
-createPianoKeyboard() {
-    const pianoKeys = document.getElementById('pianoKeys');
-    pianoKeys.innerHTML = '';
-    
-    // 只创建白键，然后在正确位置添加黑键
-    const whiteNotes = [
-        'C2', 'D2', 'E2', 'F2', 'G2', 'A2', 'B2',
-        'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
-        'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
-        'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5',
-        'C6'
-    ];
-    
-    // 先创建所有白键
-    whiteNotes.forEach((noteName, index) => {
-        const key = document.createElement('div');
-        key.className = 'piano-key white';
-        key.dataset.note = noteName;
-        
-        if (noteName === 'C4') {
-            key.classList.add('key-middle-c');
-        }
-        
-        const label = document.createElement('div');
-        label.className = 'key-label';
-        label.textContent = noteName;
-        key.appendChild(label);
-        
-        this.addKeyEvents(key, noteName);
-        pianoKeys.appendChild(key);
-    });
-    
-    // 然后在正确位置添加黑键
-    const blackNotes = [
-        {note: 'C#2', position: 0}, {note: 'D#2', position: 1},
-        {note: 'F#2', position: 3}, {note: 'G#2', position: 4}, {note: 'A#2', position: 5},
-        {note: 'C#3', position: 7}, {note: 'D#3', position: 8},
-        {note: 'F#3', position: 10}, {note: 'G#3', position: 11}, {note: 'A#3', position: 12},
-        {note: 'C#4', position: 14}, {note: 'D#4', position: 15},
-        {note: 'F#4', position: 17}, {note: 'G#4', position: 18}, {note: 'A#4', position: 19},
-        {note: 'C#5', position: 21}, {note: 'D#5', position: 22},
-        {note: 'F#5', position: 24}, {note: 'G#5', position: 25}, {note: 'A#5', position: 26}
-    ];
-    
-    blackNotes.forEach(blackNote => {
-        const key = document.createElement('div');
-        key.className = 'piano-key black';
-        key.dataset.note = blackNote.note;
-        
-        // 简单直接的位置计算：每个白键宽度约3.5%，黑键偏移量固定
-        const leftPosition = (blackNote.position * 3.57) + 2.2;
-        key.style.left = `${leftPosition}%`;
-        
-        const label = document.createElement('div');
-        label.className = 'key-label';
-        label.textContent = blackNote.note;
-        key.appendChild(label);
-        
-        this.addKeyEvents(key, blackNote.note);
-        pianoKeys.appendChild(key);
-    });
-}
-
-getBlackKeyOffset(noteName) {
-    // 黑键在相邻白键之间的偏移量
-    const offsets = {
-        'C#': 8, 'D#': 28, 'F#': 68, 'G#': 88, 'A#': 108
-    };
-    const baseNote = noteName.replace(/\d/, '');
-    return offsets[baseNote] || 0;
-}
+            createPianoKeyboard() {
+                const keysContainer = document.getElementById('pianoKeys');
+                const notes = [
+                    'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
+                    'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
+                    'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
+                    'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
+                    'C6'
+                ];
                 
-                // 然后创建黑键，基于白键位置精确定位
-                for (let noteNumber = startNote; noteNumber <= endNote; noteNumber++) {
-                    const noteName = this.numberToNote(noteNumber);
-                    const isBlack = this.isBlackKey(noteName);
+                let whiteKeyIndex = 0;
+                
+                notes.forEach((note, index) => {
+                    const isBlack = note.includes('#');
+                    const key = document.createElement('div');
                     
                     if (isBlack) {
-                        const key = document.createElement('div');
-                        key.className = `piano-key black`;
-                        key.dataset.note = noteName;
-                        key.dataset.number = noteNumber;
-                        
-                        // 精确定位黑键
-                        const position = this.calculateBlackKeyPosition(noteNumber, whiteKeys);
-                        key.style.left = `${position}%`;
-                        
-                        const label = document.createElement('div');
-                        label.className = 'key-label';
-                        label.textContent = noteName;
-                        key.appendChild(label);
-                        
-                        this.addKeyEvents(key, noteName);
-                        pianoKeys.appendChild(key);
+                        key.className = 'black-key';
+                        // 黑键位置在两个白键之间
+                        const offset = whiteKeyIndex * 42 - 13.5;
+                        key.style.left = offset + 'px';
+                    } else {
+                        key.className = 'white-key';
+                        whiteKeyIndex++;
                     }
-                }
-            }
-
-            calculateBlackKeyPosition(noteNumber, whiteKeys) {
-                // 黑键相对于白键的精确定位
-                const blackKeyOffsets = {
-                    'C#': 0.75,  // C#在C和D之间，偏向C
-                    'D#': 1.75,  // D#在D和E之间
-                    'F#': 3.75,  // F#在F和G之间
-                    'G#': 4.75,  // G#在G和A之间
-                    'A#': 5.75   // A#在A和B之间
-                };
-                
-                const noteName = this.numberToNote(noteNumber);
-                const baseNote = noteName.replace(/\d/, '');
-                const octave = parseInt(noteName.match(/\d/)[0]);
-                
-                // 计算基础位置
-                let basePosition = 0;
-                const octaveStartNote = (octave - 2) * 12 + 24; // C2开始
-                const noteInOctave = noteNumber - octaveStartNote;
-                
-                // 每个八度内黑键的位置
-                const octaveBlackPositions = {
-                    1: 0.75,   // C#
-                    3: 1.75,   // D#
-                    6: 3.75,   // F#
-                    8: 4.75,   // G#
-                    10: 5.75   // A#
-                };
-                
-                if (octaveBlackPositions[noteInOctave] !== undefined) {
-                    basePosition = (octave - 2) * 7 + octaveBlackPositions[noteInOctave];
-                }
-                
-                // 转换为百分比
-                const totalWhiteKeys = 29; // C2到C6的白键数量
-                return (basePosition / totalWhiteKeys) * 100;
-            }
-
-            addKeyEvents(key, noteName) {
-                key.addEventListener('mousedown', (e) => {
-                    e.preventDefault();
-                    this.playPianoKey(noteName, key);
+                    
+                    const label = document.createElement('div');
+                    label.className = 'note-label';
+                    label.textContent = note;
+                    key.appendChild(label);
+                    
+                    // 添加点击事件 - 连接到我们的系统
+                    key.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        key.classList.add('active');
+                        this.playPianoKey(note, key);
+                    });
+                    
+                    key.addEventListener('mouseup', () => {
+                        key.classList.remove('active');
+                    });
+                    
+                    key.addEventListener('mouseleave', () => {
+                        key.classList.remove('active');
+                    });
+                    
+                    // 触摸设备支持
+                    key.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        this.playPianoKey(note, key);
+                    });
+                    
+                    key.addEventListener('touchend', () => {
+                        key.classList.remove('active');
+                    });
+                    
+                    keysContainer.appendChild(key);
                 });
-                
-                key.addEventListener('mouseup', () => {
-                    key.classList.remove('active');
-                });
-                
-                key.addEventListener('mouseleave', () => {
-                    key.classList.remove('active');
-                });
-                
-                key.addEventListener('touchstart', (e) => {
-                    e.preventDefault();
-                    this.playPianoKey(noteName, key);
-                });
-                
-                key.addEventListener('touchend', () => {
-                    key.classList.remove('active');
-                });
-            }
-
-            numberToNote(number) {
-                const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-                const octave = Math.floor(number / 12) - 1;
-                const noteIndex = number % 12;
-                return notes[noteIndex] + octave;
-            }
-
-            isBlackKey(noteName) {
-                return noteName.includes('#');
             }
 
             playPianoKey(noteName, keyElement) {
+                // 播放声音
                 this.synth.triggerAttackRelease(noteName, "4n");
-                keyElement.classList.add('active');
+                
+                // 在五线谱上添加音符
                 this.addNoteToStaffFromPiano(noteName);
             }
 
@@ -653,6 +507,7 @@ getBlackKeyOffset(noteName) {
                 }
             }
 
+            // ... 其他方法保持不变（addNoteAtPosition, createNoteElement, addInitialMeasures等）
             addNoteAtPosition(x, y) {
                 const staff = document.getElementById('staff');
                 const notePositions = this.getNotePositions();
@@ -770,6 +625,7 @@ getBlackKeyOffset(noteName) {
             }
 
             initializeEventListeners() {
+                // ... 事件监听代码保持不变
                 document.querySelectorAll('.preset-btn').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
