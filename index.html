@@ -481,19 +481,21 @@
                 this.addNoteToStaffFromPiano(noteName);
             }
 
-           addNoteToStaffFromPiano(noteName) {
+          addNoteToStaffFromPiano(noteName) {
     const staff = document.getElementById('staff');
     const staffHeight = staff.offsetHeight;
     
     const noteNumber = this.noteToNumber(noteName);
-    const minNote = 48; // C3
+    // 调整音域范围，让中央C在正确位置
+    const minNote = 36; // C2 - 更低的起始音
     const maxNote = 84; // C6
     
     if (noteNumber >= minNote && noteNumber <= maxNote) {
         const noteRange = maxNote - minNote;
-        // 修复：低音在下方，高音在上方
+        // 修复：高音在上方，低音在下方
+        // 使用 1 - relativePosition 来反转位置
         const relativePosition = (noteNumber - minNote) / noteRange;
-        const y = staffHeight * (0.1 + relativePosition * 0.8); // 从10%到90%
+        const y = staffHeight * (0.9 - relativePosition * 0.8); // 从90%到10%
         
         this.createNoteElement(noteName, this.currentX, y);
         this.currentX += this.noteSpacing;
@@ -512,19 +514,19 @@ getNotePositions() {
     const staff = document.getElementById('staff');
     const staffHeight = staff.offsetHeight;
     
-    // 修复：音符顺序从低到高
+    // 音符顺序从高到低，对应五线谱从上到下
     const notes = [
-        'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
-        'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
-        'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5',
-        'C6'
+        'C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5',
+        'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4',
+        'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3',
+        'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2'
     ];
     
     const positions = [];
     const totalNotes = notes.length;
     
     notes.forEach((note, index) => {
-        // 修复：低音在下方 (index=0 -> y较大)，高音在上方 (index大 -> y较小)
+        // 高音在顶部 (index=0 -> y较小)，低音在底部 (index大 -> y较大)
         const y = staffHeight * (0.1 + (index / totalNotes) * 0.8);
         positions.push({ note, y });
     });
