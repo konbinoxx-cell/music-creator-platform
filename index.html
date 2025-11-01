@@ -481,72 +481,56 @@
                 this.addNoteToStaffFromPiano(noteName);
             }
 
-            addNoteToStaffFromPiano(noteName) {
-                const staff = document.getElementById('staff');
-                const staffHeight = staff.offsetHeight;
-                
-                const noteNumber = this.noteToNumber(noteName);
-                const minNote = 48; // C3
-                const maxNote = 84; // C6
-                
-                if (noteNumber >= minNote && noteNumber <= maxNote) {
-                    const noteRange = maxNote - minNote;
-                    const relativePosition = (noteNumber - minNote) / noteRange;
-                    const y = staffHeight * (1 - relativePosition * 0.8 - 0.1);
-                    
-                    this.createNoteElement(noteName, this.currentX, y);
-                    this.currentX += this.noteSpacing;
-                    
-                    if (this.currentX > (this.measures.length * this.measureWidth - 50)) {
-                        this.addNewMeasure();
-                    }
-                    
-                    this.updateStatus(`Added note: ${noteName} 添加音符: ${noteName}`);
-                } else {
-                    this.updateStatus(`Note ${noteName} is outside staff range 音符 ${noteName} 超出五线谱范围`);
-                }
-            }
+           addNoteToStaffFromPiano(noteName) {
+    const staff = document.getElementById('staff');
+    const staffHeight = staff.offsetHeight;
+    
+    const noteNumber = this.noteToNumber(noteName);
+    const minNote = 48; // C3
+    const maxNote = 84; // C6
+    
+    if (noteNumber >= minNote && noteNumber <= maxNote) {
+        const noteRange = maxNote - minNote;
+        // 修复：低音在下方，高音在上方
+        const relativePosition = (noteNumber - minNote) / noteRange;
+        const y = staffHeight * (0.1 + relativePosition * 0.8); // 从10%到90%
+        
+        this.createNoteElement(noteName, this.currentX, y);
+        this.currentX += this.noteSpacing;
+        
+        if (this.currentX > (this.measures.length * this.measureWidth - 50)) {
+            this.addNewMeasure();
+        }
+        
+        this.updateStatus(`Added note: ${noteName} 添加音符: ${noteName}`);
+    } else {
+        this.updateStatus(`Note ${noteName} is outside staff range 音符 ${noteName} 超出五线谱范围`);
+    }
+}
 
-            // ... 其他方法保持不变（addNoteAtPosition, createNoteElement, addInitialMeasures等）
-            addNoteAtPosition(x, y) {
-                const staff = document.getElementById('staff');
-                const notePositions = this.getNotePositions();
-                
-                let closestNote = notePositions[0];
-                let minDistance = Math.abs(y - closestNote.y);
-                
-                notePositions.forEach(notePos => {
-                    const distance = Math.abs(y - notePos.y);
-                    if (distance < minDistance) {
-                        minDistance = distance;
-                        closestNote = notePos;
-                    }
-                });
-                
-                this.createNoteElement(closestNote.note, x, y);
-                this.updateStatus(`Added note: ${closestNote.note} 添加音符: ${closestNote.note}`);
-            }
-
-            getNotePositions() {
-                const staff = document.getElementById('staff');
-                const staffHeight = staff.offsetHeight;
-                
-                const notes = [
-                    'C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5',
-                    'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4',
-                    'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3'
-                ];
-                
-                const positions = [];
-                const totalNotes = notes.length;
-                
-                notes.forEach((note, index) => {
-                    const y = staffHeight * (0.1 + (index / totalNotes) * 0.8);
-                    positions.push({ note, y });
-                });
-                
-                return positions;
-            }
+getNotePositions() {
+    const staff = document.getElementById('staff');
+    const staffHeight = staff.offsetHeight;
+    
+    // 修复：音符顺序从低到高
+    const notes = [
+        'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3',
+        'C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4',
+        'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5',
+        'C6'
+    ];
+    
+    const positions = [];
+    const totalNotes = notes.length;
+    
+    notes.forEach((note, index) => {
+        // 修复：低音在下方 (index=0 -> y较大)，高音在上方 (index大 -> y较小)
+        const y = staffHeight * (0.1 + (index / totalNotes) * 0.8);
+        positions.push({ note, y });
+    });
+    
+    return positions;
+}
 
             createNoteElement(note, x, y) {
                 const staff = document.getElementById('staff');
