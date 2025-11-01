@@ -452,39 +452,53 @@
             }
 
             createPianoKeyboard() {
-                const pianoKeys = document.getElementById('pianoKeys');
-                pianoKeys.innerHTML = '';
-                
-                // 创建49键钢琴 (C2-C6)
-                const startNote = 36; // C2
-                const endNote = 84;   // C6
-                
-                // 先创建所有白键
-                const whiteKeys = [];
-                for (let noteNumber = startNote; noteNumber <= endNote; noteNumber++) {
-                    const noteName = this.numberToNote(noteNumber);
-                    const isBlack = this.isBlackKey(noteName);
-                    
-                    if (!isBlack) {
-                        const key = document.createElement('div');
-                        key.className = `piano-key white`;
-                        key.dataset.note = noteName;
-                        key.dataset.number = noteNumber;
-                        
-                        if (noteName === 'C4') {
-                            key.classList.add('key-middle-c');
-                        }
-                        
-                        const label = document.createElement('div');
-                        label.className = 'key-label';
-                        label.textContent = noteName;
-                        key.appendChild(label);
-                        
-                        this.addKeyEvents(key, noteName);
-                        pianoKeys.appendChild(key);
-                        whiteKeys.push({ key, noteName, noteNumber });
-                    }
-                }
+    const pianoKeys = document.getElementById('pianoKeys');
+    pianoKeys.innerHTML = '';
+    
+    // 简化的钢琴键盘创建 - 确保黑键位置正确
+    const notes = [
+        'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
+        'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 
+        'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
+        'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
+        'C6'
+    ];
+    
+    let whiteKeyCount = 0;
+    
+    notes.forEach((noteName, index) => {
+        const isBlack = this.isBlackKey(noteName);
+        const key = document.createElement('div');
+        key.className = `piano-key ${isBlack ? 'black' : 'white'}`;
+        key.dataset.note = noteName;
+        
+        if (!isBlack) {
+            // 白键 - 顺序排列
+            whiteKeyCount++;
+        } else {
+            // 黑键 - 精确定位在白键之间
+            const blackKeyOffset = this.getBlackKeyOffset(noteName);
+            key.style.left = `calc(${((whiteKeyCount - 1) * 100 / 28)}% + ${blackKeyOffset}px)`;
+        }
+        
+        const label = document.createElement('div');
+        label.className = 'key-label';
+        label.textContent = noteName;
+        key.appendChild(label);
+        
+        this.addKeyEvents(key, noteName);
+        pianoKeys.appendChild(key);
+    });
+}
+
+getBlackKeyOffset(noteName) {
+    // 黑键在相邻白键之间的偏移量
+    const offsets = {
+        'C#': 8, 'D#': 28, 'F#': 68, 'G#': 88, 'A#': 108
+    };
+    const baseNote = noteName.replace(/\d/, '');
+    return offsets[baseNote] || 0;
+}
                 
                 // 然后创建黑键，基于白键位置精确定位
                 for (let noteNumber = startNote; noteNumber <= endNote; noteNumber++) {
