@@ -77,6 +77,7 @@
             flex-direction: column;
             height: 100%;
             overflow: hidden;
+            gap: 10px; /* 添加间隙 */
         }
         /* 五线谱区域 */
         .staff-section {
@@ -86,6 +87,7 @@
             position: relative;
             overflow-x: auto;
             overflow-y: hidden;
+            margin-bottom: 10px; /* 增加底部间隙 */
         }
         .staff-container {
             height: 100%;
@@ -114,6 +116,7 @@
             background: #000;
             width: 20px;
             transform: translateX(-50%);
+            z-index: 5;
         }
         .measure-line {
             position: absolute;
@@ -173,7 +176,7 @@
         /* 钢琴键盘区域 */
         .piano-section {
             flex: 1;
-            max-height: 100px; /* 降低键盘高度 */
+            max-height: 100px;
             background: #2c3e50;
             border-radius: 3px;
             padding: 3px;
@@ -232,10 +235,10 @@
         }
         .note-label {
             position: absolute;
-            bottom: 5px; /* 调整标签位置以适应更矮的键盘 */
+            bottom: 5px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 10px; /* 减小字体 */
+            font-size: 10px;
             color: #666;
             user-select: none;
         }
@@ -296,7 +299,7 @@
         /* 响应式设计 */
         @media (max-width: 768px) {
             .piano-section {
-                max-height: 80px; /* 移动设备上进一步降低高度 */
+                max-height: 80px;
             }
             .white-key {
                 width: 30px;
@@ -312,6 +315,9 @@
             }
             .black-key .note-label {
                 font-size: 7px;
+            }
+            .staff-section {
+                margin-bottom: 5px;
             }
         }
     </style>
@@ -378,7 +384,6 @@
                 this.noteMap = {
                     'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11
                 };
-
                 this.initializeEventListeners();
                 this.setupStaff();
                 this.createPianoKeyboard();
@@ -399,9 +404,9 @@
 
             addNoteAtPosition(x, y) {
                 const staffHeight = document.getElementById('staff').offsetHeight;
-                const lineSpacing = staffHeight * 0.2; // Space between staff lines
-                const snapY = Math.round(y / (lineSpacing / 2)) * (lineSpacing / 2); // Snap to half-line intervals
-                const noteNumber = Math.round((0.95 - snapY / staffHeight) / 0.9 * 96) + 12; // Map to MIDI notes
+                const lineSpacing = staffHeight * 0.2;
+                const snapY = Math.round(y / (lineSpacing / 2)) * (lineSpacing / 2);
+                const noteNumber = Math.round((0.95 - snapY / staffHeight) / 0.9 * 96) + 12;
                 const noteName = this.numberToNote(noteNumber);
                 if (noteName) {
                     this.createNoteElement(noteName, x, snapY);
@@ -484,14 +489,16 @@
                 const staff = document.getElementById('staff');
                 const staffHeight = staff.offsetHeight;
                 const noteNumber = this.noteToNumber(noteName);
-                const minNote = 12; // C0
-                const maxNote = 108; // C9
+                const minNote = 12;
+                const maxNote = 108;
 
                 if (noteNumber >= minNote && noteNumber <= maxNote) {
-                    const noteRange = maxNote - minNote;
+                    const noteRange = maxNote - personally;
                     const relativePosition = (noteNumber - minNote) / noteRange;
                     const y = staffHeight * (0.95 - relativePosition * 0.9);
-                    this.createNoteElement(noteName, this.currentX, y);
+                    const lineSpacing = staffHeight * 0.2;
+                    const snapY = Math.round(y / (lineSpacing / 2)) * (lineSpacing / 2);
+                    this.createNoteElement(noteName, this.currentX, snapY);
                     this.currentX += this.noteSpacing * 2;
                     if (this.currentX > (this.measures.length * this.measureWidth - 50)) {
                         this.addNewMeasure();
@@ -507,14 +514,15 @@
                 const staffHeight = staff.offsetHeight;
                 const lineSpacing = staffHeight * 0.2;
                 const noteNumber = this.noteToNumber(note);
-                const relativeY = (0.95 - y / staffHeight) / 0.9;
                 const snappedY = Math.round(y / (lineSpacing / 2)) * (lineSpacing / 2);
 
-                // Add ledger lines if necessary
-                if (y < lineSpacing || y > staffHeight - lineSpacing) {
-                    const ledgerCount = Math.floor(Math.abs((y - staffHeight * 0.8) / (lineSpacing / 2)));
+                // Add ledger lines
+                const staffTop = staffHeight * 0.2;
+                const staffBottom = staffHeight * 0.8;
+                if (snappedY < staffTop || snappedY > staffBottom) {
+                    const ledgerCount = Math.floor(Math.abs((snappedY - staffHeight * (snappedY < staffTop ? 0.2 : 0.8)) / (lineSpacing / 2)));
                     for (let i = 1; i <= ledgerCount; i++) {
-                        const ledgerY = y < lineSpacing ? 
+                        const ledgerY = snappedY < staffTop ?
                             staffHeight * 0.2 - i * lineSpacing / 2 :
                             staffHeight * 0.8 + i * lineSpacing / 2;
                         const ledgerLine = document.createElement('div');
@@ -538,7 +546,11 @@
                 noteElement.addEventListener('dblclick', (e) => {
                     e.stopPropagation();
                     noteElement.remove();
+                    document.querySelectorAll(`.ledger-line[style*="left: ${x}px"]`).forEach(line => line.remove());
                     this.staffNotes = this.staffNotes.filter(n => n.element !== noteElement);
+                    this.measures.forEach(m => {
+                        m.notes = m.notes.filter(n => n.note !== note || n.x !== x);
+                    });
                     this.updateStatus(`Deleted note: ${note} 删除音符: ${note}`);
                 });
 
@@ -694,6 +706,7 @@
                 };
 
                 this.updateStatus(`Analysis complete: ${styleNames[style]} style 分析完成: ${styleNames[style]}风格`);
+                return style;
             }
 
             hasMinorFeel(notes) {
@@ -715,26 +728,62 @@
                 }
                 this.updateStatus('Generating intelligent accompaniment... 生成智能伴奏中...', true);
 
+                const style = this.analyzeMelody();
+                const key = this.detectKey();
+                const chordProgression = this.getChordProgression(style, key);
+
                 setTimeout(() => {
-                    this.staffNotes.forEach(noteObj => {
-                        const chord = this.getSimpleChord(noteObj.note);
-                        const x = parseFloat(noteObj.element.style.left);
-                        const y = parseFloat(noteObj.element.style.top);
-                        chord.forEach((noteNum, index) => {
-                            if (index > 0) { // Skip root note
-                                const chordNote = this.numberToNote(noteNum + Math.floor(this.noteToNumber(noteObj.note) / 12) * 12);
-                                this.createNoteElement(chordNote, x, y + (index * 10));
-                            }
+                    let chordX = this.currentX;
+                    chordProgression.forEach((chord, index) => {
+                        const notes = this.getChordNotes(chord, key);
+                        notes.forEach((noteNum, noteIndex) => {
+                            const noteName = this.numberToNote(noteNum);
+                            const staffHeight = document.getElementById('staff').offsetHeight;
+                            const noteNumber = this.noteToNumber(noteName);
+                            const minNote = 12;
+                            const maxNote = 108;
+                            const noteRange = maxNote - minNote;
+                            const relativePosition = (noteNumber - minNote) / noteRange;
+                            const y = staffHeight * (0.95 - relativePosition * 0.9);
+                            this.createNoteElement(noteName, chordX, y);
                         });
+                        chordX += this.noteSpacing * 4; // Space chords further apart
+                        if (chordX > (this.measures.length * this.measureWidth - 50)) {
+                            this.addNewMeasure();
+                        }
                     });
+                    this.currentX = chordX;
                     this.updateStatus('Accompaniment generated successfully! 伴奏生成完成！');
                     document.getElementById('exportBtn').disabled = false;
                 }, 1500);
             }
 
-            getSimpleChord(rootNote) {
-                const root = this.noteToNumber(rootNote);
-                return [root, root + 4, root + 7]; // Major chord
+            detectKey() {
+                const notes = this.staffNotes.map(n => this.noteToNumber(n.note) % 12);
+                const noteCounts = {};
+                notes.forEach(note => {
+                    noteCounts[note] = (noteCounts[note] || 0) + 1;
+                });
+                const mostCommonNote = Object.keys(noteCounts).reduce((a, b) => noteCounts[a] > noteCounts[b] ? a : b, 0);
+                return parseInt(mostCommonNote);
+            }
+
+            getChordProgression(style, key) {
+                const progressions = {
+                    happy: [0, 5, 7, 2], // I, IV, V, ii
+                    calm: [0, 3, 7, 0], // i, iii, V, i (minor)
+                    mystery: [0, 3, 8, 10], // i, iii, vi, vii°
+                    energy: [0, 7, 2, 5] // I, V, ii, IV
+                };
+                return progressions[style].map(chord => (chord + key) % 12);
+            }
+
+            getChordNotes(root, key) {
+                const isMinor = this.hasMinorFeel([root]);
+                if (isMinor) {
+                    return [root, (root + 3) % 12, (root + 7) % 12]; // Minor chord
+                }
+                return [root, (root + 4) % 12, (root + 7) % 12]; // Major chord
             }
 
             playStaff() {
