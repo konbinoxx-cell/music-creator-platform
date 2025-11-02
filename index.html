@@ -492,11 +492,11 @@
     
     if (noteNumber >= minNote && noteNumber <= maxNote) {
         const noteRange = maxNote - minNote;
-        // 增加覆盖高度：从0%开始，到70%结束
+        // 增加覆盖高度：从0%开始，到100%结束
         const relativePosition = (noteNumber - minNote) / noteRange;
-        const y = staffHeight * (0.9 - relativePosition * 0.9); // 从90%到0%
+        const y = staffHeight * (1 - relativePosition * 1); // 从100%到0%
         
-        // 增加音符间距1.5倍
+        // 增加音符间距2倍
         this.createNoteElement(noteName, this.currentX, y);
         this.currentX += this.noteSpacing * 2; // 间距增加2倍
         
@@ -528,8 +528,8 @@ getNotePositions() {
     const totalNotes = notes.length;
     
     notes.forEach((note, index) => {
-        // 增加覆盖高度：从0%开始，到70%结束
-        const y = staffHeight * (0.0 + (index / totalNotes) * 0.7);
+        // 增加覆盖高度：从0%开始，到100%结束
+        const y = staffHeight * (0.0 + (index / totalNotes) * 1);
         positions.push({ note, y });
     });
     
