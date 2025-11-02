@@ -481,19 +481,21 @@
                 this.addNoteToStaffFromPiano(noteName);
             }
 
-            addNoteToStaffFromPiano(noteName) {
+           addNoteToStaffFromPiano(noteName) {
     const staff = document.getElementById('staff');
     const staffHeight = staff.offsetHeight;
     
     const noteNumber = this.noteToNumber(noteName);
-    const minNote = 48; // C3
+    // 扩大音域范围，包含中央C以下的音符
+    const minNote = 36; // C2 - 包含低音区
     const maxNote = 84; // C6
     
     if (noteNumber >= minNote && noteNumber <= maxNote) {
         const noteRange = maxNote - minNote;
-        // 继续提高位置：从10%开始，到60%结束
+        // 提高两个八度：整体上移
         const relativePosition = (noteNumber - minNote) / noteRange;
-        const y = staffHeight * (0.6 - relativePosition * 0.5); // 从60%到10%
+        // 整体上移：从5%开始，到45%结束（提高两个八度）
+        const y = staffHeight * (0.45 - relativePosition * 0.4); // 从45%到5%
         
         this.createNoteElement(noteName, this.currentX, y);
         this.currentX += this.noteSpacing;
@@ -512,18 +514,20 @@ getNotePositions() {
     const staff = document.getElementById('staff');
     const staffHeight = staff.offsetHeight;
     
+    // 包含中央C以下的音符
     const notes = [
         'C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5',
         'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4',
-        'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3'
+        'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3',
+        'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2'
     ];
     
     const positions = [];
     const totalNotes = notes.length;
     
     notes.forEach((note, index) => {
-        // 继续提高位置：从10%开始，到60%结束
-        const y = staffHeight * (0.1 + (index / totalNotes) * 0.5);
+        // 整体上移两个八度：从5%开始，到45%结束
+        const y = staffHeight * (0.05 + (index / totalNotes) * 0.4);
         positions.push({ note, y });
     });
     
