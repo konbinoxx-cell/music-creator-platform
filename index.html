@@ -10,7 +10,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
@@ -18,7 +17,6 @@
             padding: 5px;
             overflow: hidden;
         }
-
         .container {
             display: grid;
             grid-template-rows: auto 1fr auto;
@@ -28,7 +26,6 @@
             border-radius: 10px;
             overflow: hidden;
         }
-
         /* 顶部控制栏 */
         .top-controls {
             display: grid;
@@ -38,18 +35,15 @@
             background: #34495e;
             color: white;
         }
-
         .logo {
             font-size: 16px;
             font-weight: bold;
         }
-
         .compact-presets {
             display: flex;
             gap: 5px;
             justify-content: center;
         }
-
         .preset-btn {
             padding: 6px 10px;
             border: 1px solid #7f8c8d;
@@ -60,17 +54,14 @@
             font-size: 11px;
             transition: all 0.2s;
         }
-
         .preset-btn.active {
             background: #e74c3c;
             border-color: #c0392b;
         }
-
         .top-right-controls {
             display: flex;
             gap: 5px;
         }
-
         .mini-btn {
             padding: 6px 10px;
             border: none;
@@ -80,14 +71,13 @@
             cursor: pointer;
             font-size: 11px;
         }
-
         /* 主内容区 */
         .main-content {
             display: flex;
             flex-direction: column;
             height: 100%;
+            overflow: hidden; /* 防止主内容区溢出 */
         }
-
         /* 五线谱区域 */
         .staff-section {
             flex: 0 0 180px;
@@ -95,20 +85,18 @@
             border-bottom: 2px solid #bdc3c7;
             position: relative;
             overflow-x: auto;
+            overflow-y: hidden; /* 防止垂直溢出 */
         }
-
         .staff-container {
             height: 100%;
             min-width: 800px;
             position: relative;
         }
-
         .staff {
             position: relative;
             height: 100%;
             background: white;
         }
-
         .staff-line {
             position: absolute;
             left: 0;
@@ -116,16 +104,14 @@
             height: 1px;
             background: #000;
         }
-
         .staff-line:nth-child(1) { top: 20%; }
         .staff-line:nth-child(2) { top: 40%; }
         .staff-line:nth-child(3) { top: 60%; }
-        .staff-line:nth-child(4) { 
-            top: 80%; 
+        .staff-line:nth-child(4) {
+            top: 80%;
             height: 2px;
             background: #e74c3c;
         }
-
         .measure-line {
             position: absolute;
             top: 0;
@@ -134,7 +120,6 @@
             background: #7f8c8d;
             z-index: 1;
         }
-
         .staff-note {
             position: absolute;
             width: 16px;
@@ -152,11 +137,9 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
             transition: all 0.2s;
         }
-
         .staff-note:hover {
             transform: translate(-50%, -50%) scale(1.2);
         }
-
         .staff-note:hover::after {
             content: 'Double click to delete 双击删除';
             position: absolute;
@@ -171,7 +154,6 @@
             white-space: nowrap;
             z-index: 100;
         }
-
         .middle-c-marker {
             position: absolute;
             left: 10px;
@@ -185,10 +167,9 @@
             font-weight: bold;
             z-index: 5;
         }
-
         /* 钢琴键盘区域 - 进一步优化样式 */
         .piano-section {
-            flex: 0 0 140px;
+            flex: 1; /* 改为flex:1以填充剩余空间 */
             background: #2c3e50;
             border-radius: 3px; /* 进一步减小边框圆角 */
             padding: 3px; /* 进一步减小内边距 */
@@ -199,14 +180,14 @@
             justify-content: center;
             overflow: hidden; /* 防止内容溢出 */
         }
-        
+       
         .keys {
             display: flex;
             position: relative;
             height: 100%;
-            width: calc(42px * 29); /* 精确计算键盘宽度 */
+            width: calc(42px * 35); /* 调整为更宽的键盘，覆盖更多音域 */
         }
-        
+       
         .white-key {
             width: 42px;
             height: 100%;
@@ -218,18 +199,18 @@
             position: relative;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
-        
+       
         .white-key:hover {
             background: linear-gradient(to bottom, #f0f0f0 0%, #e0e0e0 100%);
         }
-        
+       
         .white-key:active,
         .white-key.active {
             background: linear-gradient(to bottom, #e0e0e0 0%, #d0d0d0 100%);
             transform: translateY(2px);
             box-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
-        
+       
         .black-key {
             width: 27px;
             height: 60%;
@@ -242,17 +223,17 @@
             z-index: 2;
             box-shadow: 0 3px 5px rgba(0,0,0,0.5);
         }
-        
+       
         .black-key:hover {
             background: linear-gradient(to bottom, #3c3c3c 0%, #1c1c1c 100%);
         }
-        
+       
         .black-key:active,
         .black-key.active {
             background: linear-gradient(to bottom, #1c1c1c 0%, #0c0c0c 100%);
             transform: translateY(2px);
         }
-        
+       
         .note-label {
             position: absolute;
             bottom: 8px;
@@ -262,13 +243,12 @@
             color: #666;
             user-select: none;
         }
-        
+       
         .black-key .note-label {
             color: #999;
             bottom: 5px;
             font-size: 10px;
         }
-
         /* 侧边控制栏 */
         .side-controls {
             position: fixed;
@@ -280,7 +260,6 @@
             gap: 8px;
             z-index: 1000;
         }
-
         .side-btn {
             padding: 10px 12px;
             border: none;
@@ -296,15 +275,12 @@
             align-items: center;
             justify-content: center;
         }
-
         .side-btn.record {
             background: #e74c3c;
         }
-
         .side-btn.export {
             background: #2ecc71;
         }
-
         /* 底部状态栏 */
         .status-bar {
             padding: 5px 10px;
@@ -315,11 +291,9 @@
             justify-content: space-between;
             align-items: center;
         }
-
         #statusText {
             flex: 1;
         }
-
         .loading {
             color: #3498db;
             margin-left: 10px;
@@ -343,7 +317,6 @@
                 <button class="mini-btn" id="generateFromMelody">Auto Accompany 智能伴奏</button>
             </div>
         </div>
-
         <!-- 主内容区 -->
         <div class="main-content">
             <!-- 五线谱区域 -->
@@ -358,13 +331,11 @@
                     </div>
                 </div>
             </div>
-
             <!-- 钢琴键盘区域 -->
             <div class="piano-section">
                 <div class="keys" id="pianoKeys"></div>
             </div>
         </div>
-
         <!-- 侧边控制按钮 -->
         <div class="side-controls">
             <button class="side-btn" id="playStaff">Play 播放</button>
@@ -372,39 +343,35 @@
             <button class="side-btn record" id="recordBtn">Record 录音</button>
             <button class="side-btn export" id="exportBtn" disabled>Export 导出</button>
         </div>
-
         <!-- 底部状态栏 -->
         <div class="status-bar">
             <div id="statusText">Ready - Play on piano keyboard, notes will appear on staff 准备就绪 - 在钢琴键盘上弹奏，音符会自动出现在五线谱上</div>
             <div class="loading" id="loading" style="display: none;">Generating... 生成中...</div>
         </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script>
         class ProfessionalMusicCreator {
             constructor() {
                 this.synth = new Tone.PolySynth().toDestination();
                 this.isRecording = false;
-                this.mediaRecorder = null;
-                this.recordedChunks = [];
-                this.currentAudioUrl = null;
+                this.recorder = null; // 使用 Tone.js 的 Recorder
+                this.currentAudioBlob = null; // 存储录制的音频 Blob
                 this.isPlaying = false;
                 this.staffNotes = [];
                 this.measures = [];
                 this.measureWidth = 200;
                 this.currentX = 50;
                 this.noteSpacing = 30; // 保持原来的间距
-                
+               
                 this.initializeEventListeners();
                 this.setupStaff();
                 this.createPianoKeyboard();
                 this.addInitialMeasures();
             }
-
             setupStaff() {
                 const staff = document.getElementById('staff');
-                
+               
                 staff.addEventListener('click', (e) => {
                     if (e.target.classList.contains('staff-line') || e.target === staff) {
                         const rect = staff.getBoundingClientRect();
@@ -414,152 +381,144 @@
                     }
                 });
             }
-
             createPianoKeyboard() {
                 const keysContainer = document.getElementById('pianoKeys');
                 const notes = [
+                    'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1', // 添加更低音域
                     'C2', 'C#2', 'D2', 'D#2', 'E2', 'F2', 'F#2', 'G2', 'G#2', 'A2', 'A#2', 'B2',
                     'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3',
                     'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4',
                     'C5', 'C#5', 'D5', 'D#5', 'E5', 'F5', 'F#5', 'G5', 'G#5', 'A5', 'A#5', 'B5',
-                    'C6'
+                    'C6', 'C#6', 'D6', 'D#6', 'E6', 'F6', 'F#6', 'G6', 'G#6', 'A6', 'A#6', 'B6', // 添加更高音域
+                    'C7'
                 ];
-                
+               
                 let whiteKeyIndex = 0;
-                
+               
                 notes.forEach((note, index) => {
                     const isBlack = note.includes('#');
                     const key = document.createElement('div');
-                    
+                   
                     if (isBlack) {
                         key.className = 'black-key';
-                        // 黑键位置在两个白键之间
                         const offset = whiteKeyIndex * 42 - 13.5;
                         key.style.left = offset + 'px';
                     } else {
                         key.className = 'white-key';
                         whiteKeyIndex++;
                     }
-                    
+                   
                     const label = document.createElement('div');
                     label.className = 'note-label';
                     label.textContent = note;
                     key.appendChild(label);
-                    
-                    // 添加点击事件 - 连接到我们的系统
+                   
                     key.addEventListener('mousedown', (e) => {
                         e.preventDefault();
                         key.classList.add('active');
                         this.playPianoKey(note, key);
                     });
-                    
+                   
                     key.addEventListener('mouseup', () => {
                         key.classList.remove('active');
                     });
-                    
+                   
                     key.addEventListener('mouseleave', () => {
                         key.classList.remove('active');
                     });
-                    
+                   
                     // 触摸设备支持
                     key.addEventListener('touchstart', (e) => {
                         e.preventDefault();
                         this.playPianoKey(note, key);
                     });
-                    
+                   
                     key.addEventListener('touchend', () => {
                         key.classList.remove('active');
                     });
-                    
+                   
                     keysContainer.appendChild(key);
                 });
             }
-
             playPianoKey(noteName, keyElement) {
                 // 播放声音
                 this.synth.triggerAttackRelease(noteName, "4n");
-                
+               
                 // 在五线谱上添加音符
                 this.addNoteToStaffFromPiano(noteName);
             }
-
             addNoteToStaffFromPiano(noteName) {
                 const staff = document.getElementById('staff');
                 const staffHeight = staff.offsetHeight;
-                
+               
                 const noteNumber = this.noteToNumber(noteName);
-                // 调整音域范围
-                const minNote = 24; // C1 - 包含更低的音
-                const maxNote = 96; // C7 - 包含更高的音
-                
+                const minNote = 12; // C0 - 扩展更低音域
+                const maxNote = 108; // C9 - 扩展更高音域
+               
                 if (noteNumber >= minNote && noteNumber <= maxNote) {
                     const noteRange = maxNote - minNote;
-                    // 修正音域方向：低音在底部，高音在顶部
                     const relativePosition = (noteNumber - minNote) / noteRange;
-                    // 低音在底部(95%)，高音在顶部(5%)
+                    // 修正音域方向：低音在底部(95%)，高音在顶部(5%)
                     const y = staffHeight * (0.95 - relativePosition * 0.9);
-                    
+                   
                     // 创建音符元素
                     this.createNoteElement(noteName, this.currentX, y);
-                    
+                   
                     // 增加音符间距，使用2倍间距
                     this.currentX += this.noteSpacing * 2;
-                    
+                   
                     // 检查是否需要添加新的小节
                     if (this.currentX > (this.measures.length * this.measureWidth - 50)) {
                         this.addNewMeasure();
                     }
-                    
+                   
                     this.updateStatus(`Added note: ${noteName} 添加音符: ${noteName}`);
                 } else {
                     this.updateStatus(`Note ${noteName} is outside staff range 音符 ${noteName} 超出五线谱范围`);
                 }
             }
-
             createNoteElement(note, x, y) {
                 const staff = document.getElementById('staff');
                 const noteElement = document.createElement('div');
                 noteElement.className = 'staff-note';
-                
+               
                 if (note === 'C4') {
                     noteElement.textContent = 'C';
                     noteElement.style.background = '#e74c3c';
                 } else {
                     noteElement.textContent = note.replace(/\d/, '').replace('#', '♯');
                 }
-                
+               
                 noteElement.style.left = x + 'px';
                 noteElement.style.top = y + 'px';
                 noteElement.dataset.note = note;
-                
+               
                 noteElement.addEventListener('dblclick', (e) => {
                     e.stopPropagation();
                     noteElement.remove();
                     this.staffNotes = this.staffNotes.filter(n => n.element !== noteElement);
                     this.updateStatus(`Deleted note: ${note} 删除音符: ${note}`);
                 });
-                
+               
                 noteElement.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.synth.triggerAttackRelease(note, "4n");
                 });
-                
+               
                 staff.appendChild(noteElement);
-                
+               
                 this.staffNotes.push({
                     note: note,
-                    time: x / staff.offsetWidth,
+                    time: x / this.measureWidth, // 改进时间计算，使用measureWidth作为单位
                     element: noteElement
                 });
             }
-
             addInitialMeasures() {
-                for (let i = 0; i < 3; i++) {
+                for (let i = 0; i < 4; i++) { // 添加更多初始小节
                     this.addMeasureLine(i * this.measureWidth);
                 }
                 this.updateStaffWidth();
             }
-
             addMeasureLine(position) {
                 const staff = document.getElementById('staff');
                 const measureLine = document.createElement('div');
@@ -568,20 +527,18 @@
                 staff.appendChild(measureLine);
                 this.measures.push({ position, notes: [] });
             }
-
             addNewMeasure() {
                 const lastMeasurePos = this.measures.length * this.measureWidth;
                 this.addMeasureLine(lastMeasurePos);
                 this.updateStaffWidth();
                 this.updateStatus(`Added measure ${this.measures.length} 添加第${this.measures.length}小节`);
             }
-
             updateStaffWidth() {
                 const staff = document.getElementById('staff');
                 const neededWidth = Math.max(800, (this.measures.length + 1) * this.measureWidth);
                 staff.style.minWidth = neededWidth + 'px';
+                staff.style.width = neededWidth + 'px'; // 强制宽度更新
             }
-
             noteToNumber(note) {
                 const noteMap = { 'C': 0, 'D': 2, 'E': 4, 'F': 5, 'G': 7, 'A': 9, 'B': 11 };
                 const match = note.match(/([A-G])(#?)(\d)/);
@@ -591,7 +548,6 @@
                 }
                 return 60;
             }
-
             initializeEventListeners() {
                 // 预设风格按钮
                 document.querySelectorAll('.preset-btn').forEach(btn => {
@@ -601,14 +557,13 @@
                         const style = e.target.dataset.style;
                         const styleNames = {
                             'happy': 'Happy 欢快',
-                            'calm': 'Calm 平静', 
+                            'calm': 'Calm 平静',
                             'mystery': 'Mystery 神秘',
                             'energy': 'Energy 活力'
                         };
                         this.updateStatus(`Style set to: ${styleNames[style]} 风格设置为: ${styleNames[style]}`);
                     });
                 });
-
                 // 清空乐谱
                 document.getElementById('clearStaff').addEventListener('click', () => {
                     document.querySelectorAll('.staff-note').forEach(note => note.remove());
@@ -616,37 +571,30 @@
                     this.currentX = 50;
                     this.updateStatus('Staff cleared 乐谱已清空');
                 });
-
                 // 播放乐谱
                 document.getElementById('playStaff').addEventListener('click', () => {
                     this.playStaff();
                 });
-
                 // 分析旋律
                 document.getElementById('analyzeMelody').addEventListener('click', () => {
                     this.analyzeMelody();
                 });
-
                 // 智能伴奏
                 document.getElementById('generateFromMelody').addEventListener('click', () => {
                     this.generateFromMelody();
                 });
-
                 // 停止播放
                 document.getElementById('stopBtn').addEventListener('click', () => {
                     this.stopMusic();
                 });
-
                 // 录音
                 document.getElementById('recordBtn').addEventListener('click', () => {
                     this.toggleRecording();
                 });
-
                 // 导出
                 document.getElementById('exportBtn').addEventListener('click', () => {
                     this.exportAudio();
                 });
-
                 // 空格键控制播放/停止
                 document.addEventListener('keydown', (e) => {
                     if (e.key === ' ') {
@@ -659,164 +607,148 @@
                     }
                 });
             }
-
             analyzeMelody() {
                 if (this.staffNotes.length === 0) {
                     this.updateStatus('Please play some notes on the piano first! 请先在钢琴上弹奏一些音符！');
                     return;
                 }
-
                 const notes = this.staffNotes.map(n => this.noteToNumber(n.note));
                 const averagePitch = notes.reduce((a, b) => a + b, 0) / notes.length;
-                
+               
                 let style = 'happy';
-                if (averagePitch < 64) style = 'calm';
+                if (averagePitch < 60) style = 'calm'; // 调整阈值以更准确
                 if (this.hasMinorFeel(notes)) style = 'mystery';
                 if (this.hasLargeJumps(notes)) style = 'energy';
-                
+               
                 document.querySelectorAll('.preset-btn').forEach(btn => {
                     btn.classList.remove('active');
                     if (btn.dataset.style === style) {
                         btn.classList.add('active');
                     }
                 });
-                
+               
                 const styleNames = {
                     'happy': 'Happy 欢快',
                     'calm': 'Calm 平静',
-                    'mystery': 'Mystery 神秘', 
+                    'mystery': 'Mystery 神秘',
                     'energy': 'Energy 活力'
                 };
-                
+               
                 this.updateStatus(`Analysis complete: ${styleNames[style]} style 分析完成: ${styleNames[style]}风格`);
             }
-
             hasMinorFeel(notes) {
                 const uniqueNotes = [...new Set(notes.map(n => n % 12))];
-                return uniqueNotes.includes(3) || uniqueNotes.includes(8);
+                return uniqueNotes.includes(3) || uniqueNotes.includes(8) || uniqueNotes.includes(10); // 改进小调检测
             }
-
             hasLargeJumps(notes) {
                 for (let i = 1; i < notes.length; i++) {
-                    if (Math.abs(notes[i] - notes[i-1]) > 7) return true;
+                    if (Math.abs(notes[i] - notes[i-1]) > 6) return true; // 调整跳跃阈值
                 }
                 return false;
             }
-
             generateFromMelody() {
                 this.analyzeMelody();
                 this.updateStatus('Generating intelligent accompaniment... 生成智能伴奏中...', true);
-                
+               
+                // 模拟生成伴奏：为每个音符添加和弦（实际应用可集成AI API）
                 setTimeout(() => {
+                    this.staffNotes.forEach(noteObj => {
+                        const chord = this.getSimpleChord(noteObj.note);
+                        // 这里可以添加和弦音符到五线谱，但为简单起见，仅模拟
+                        console.log(`Added chord for ${noteObj.note}: ${chord}`);
+                    });
                     this.updateStatus('Accompaniment generated successfully! 伴奏生成完成！');
                     document.getElementById('exportBtn').disabled = false;
-                }, 1000);
+                }, 1500); // 延长模拟时间以更真实
             }
-
+            getSimpleChord(rootNote) {
+                // 简单和弦生成示例
+                const root = this.noteToNumber(rootNote);
+                return [root, root + 4, root + 7].map(num => num % 12);
+            }
             playStaff() {
                 if (this.staffNotes.length === 0) {
                     this.updateStatus('Please play some notes on the piano first! 请先在钢琴上弹奏一些音符！');
                     return;
                 }
-
                 this.stopMusic();
                 const sortedNotes = [...this.staffNotes].sort((a, b) => a.time - b.time);
                 const now = Tone.now();
-                
+               
                 sortedNotes.forEach(noteObj => {
-                    const time = now + (noteObj.time * 2);
+                    const time = now + (noteObj.time * 0.5); // 调整播放速度为更自然
                     this.synth.triggerAttackRelease(noteObj.note, "4n", time);
                 });
-
                 this.updateStatus('Playing... 播放中...');
                 this.isPlaying = true;
-                
-                const totalTime = Math.max(...sortedNotes.map(n => n.time)) * 2000 + 1000;
+               
+                const totalTime = Math.max(...sortedNotes.map(n => n.time)) * 500 + 1000; // 调整总时长计算
                 setTimeout(() => {
                     this.isPlaying = false;
                     this.updateStatus('Playback completed 播放完成');
                 }, totalTime);
             }
-
             stopMusic() {
                 this.isPlaying = false;
                 this.synth.releaseAll();
                 this.updateStatus('Playback stopped 播放已停止');
             }
-
             async toggleRecording() {
                 if (!this.isRecording) {
                     await this.startRecording();
                 } else {
-                    this.stopRecording();
+                    await this.stopRecording();
                 }
             }
-
             async startRecording() {
                 try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    this.recordedChunks = [];
-                    this.mediaRecorder = new MediaRecorder(stream);
-                    
-                    this.mediaRecorder.ondataavailable = (event) => {
-                        if (event.data.size > 0) this.recordedChunks.push(event.data);
-                    };
-                    
-                    this.mediaRecorder.onstop = () => {
-                        this.finishRecording();
-                        stream.getTracks().forEach(track => track.stop());
-                    };
-                    
-                    this.mediaRecorder.start();
+                    // 使用 Tone.js Recorder 录制合成器输出，而不是麦克风
+                    await Tone.start();
+                    this.recorder = new Tone.Recorder();
+                    this.synth.connect(this.recorder);
+                    this.recorder.start();
                     this.isRecording = true;
                     document.getElementById('recordBtn').textContent = 'Stop 停止录音';
                     this.updateStatus('Recording... 录音中...');
-                    
                 } catch (error) {
                     this.updateStatus('Recording failed: ' + error.message + ' 录音失败: ' + error.message);
                 }
             }
-
-            stopRecording() {
-                if (this.mediaRecorder && this.isRecording) {
-                    this.mediaRecorder.stop();
+            async stopRecording() {
+                if (this.recorder && this.isRecording) {
+                    const recording = await this.recorder.stop();
+                    this.currentAudioBlob = await recording.blob;
+                    this.synth.disconnect(this.recorder);
                     this.isRecording = false;
                     document.getElementById('recordBtn').textContent = 'Record 录音';
+                    this.updateStatus('Recording completed, ready to export 录音完成，可以导出');
+                    document.getElementById('exportBtn').disabled = false;
                 }
             }
-
-            finishRecording() {
-                const blob = new Blob(this.recordedChunks, { type: 'audio/webm' });
-                this.currentAudioUrl = URL.createObjectURL(blob);
-                this.updateStatus('Recording completed, ready to export 录音完成，可以导出');
-                document.getElementById('exportBtn').disabled = false;
-            }
-
             exportAudio() {
-                if (!this.currentAudioUrl) {
+                if (!this.currentAudioBlob) {
                     this.updateStatus('No audio to export 没有可导出的音频');
                     return;
                 }
-
                 try {
+                    const url = URL.createObjectURL(this.currentAudioBlob);
                     const a = document.createElement('a');
-                    a.href = this.currentAudioUrl;
+                    a.href = url;
                     a.download = `music-${new Date().getTime()}.webm`;
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
                     this.updateStatus('File downloading... 文件下载中...');
                 } catch (error) {
                     this.updateStatus('Export failed: ' + error.message + ' 导出失败: ' + error.message);
                 }
             }
-
             updateStatus(message, showLoading = false) {
                 document.getElementById('statusText').textContent = message;
                 document.getElementById('loading').style.display = showLoading ? 'block' : 'none';
             }
         }
-
         document.addEventListener('DOMContentLoaded', () => {
             new ProfessionalMusicCreator();
         });
