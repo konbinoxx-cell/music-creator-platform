@@ -486,15 +486,16 @@
                 const staffHeight = staff.offsetHeight;
                 
                 const noteNumber = this.noteToNumber(noteName);
-                // 扩大音域范围
+                // 调整音域范围，提高上限
                 const minNote = 24; // C1 - 包含更低的音
                 const maxNote = 96; // C7 - 包含更高的音
                 
                 if (noteNumber >= minNote && noteNumber <= maxNote) {
                     const noteRange = maxNote - minNote;
-                    // 使用1.0到2.0的范围，如您所要求的
+                    // 调整映射范围，使高音更靠上
                     const relativePosition = (noteNumber - minNote) / noteRange;
-                    const y = staffHeight * (1 - relativePosition * 1.0); // 从100%到0%
+                    // 调整映射范围，使高音更靠上，低音更靠下
+                    const y = staffHeight * (0.05 + relativePosition * 0.9); // 从5%到95%
                     
                     // 创建音符元素
                     this.createNoteElement(noteName, this.currentX, y);
