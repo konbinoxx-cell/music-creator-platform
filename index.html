@@ -486,19 +486,19 @@
     const staffHeight = staff.offsetHeight;
     
     const noteNumber = this.noteToNumber(noteName);
-    // 扩大音域范围，包含中央C以下的音符
-    const minNote = 36; // C2 - 包含低音区
-    const maxNote = 84; // C6
+    // 进一步扩大音域范围
+    const minNote = 24; // C1 - 包含更低的音
+    const maxNote = 96; // C7 - 包含更高的音
     
     if (noteNumber >= minNote && noteNumber <= maxNote) {
         const noteRange = maxNote - minNote;
-        // 提高两个八度：整体上移
+        // 增加覆盖高度：从0%开始，到70%结束
         const relativePosition = (noteNumber - minNote) / noteRange;
-        // 整体上移：从5%开始，到45%结束（提高两个八度）
-        const y = staffHeight * (0.45 - relativePosition * 0.4); // 从45%到5%
+        const y = staffHeight * (0.7 - relativePosition * 0.7); // 从70%到0%
         
+        // 增加音符间距1.5倍
         this.createNoteElement(noteName, this.currentX, y);
-        this.currentX += this.noteSpacing;
+        this.currentX += this.noteSpacing * 1.5; // 间距增加1.5倍
         
         if (this.currentX > (this.measures.length * this.measureWidth - 50)) {
             this.addNewMeasure();
@@ -514,20 +514,22 @@ getNotePositions() {
     const staff = document.getElementById('staff');
     const staffHeight = staff.offsetHeight;
     
-    // 包含中央C以下的音符
+    // 扩大音域范围
     const notes = [
-        'C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5',
+        'C7', 'B6', 'A6', 'G6', 'F6', 'E6', 'D6', 'C6',
+        'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5',
         'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4',
         'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3',
-        'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2'
+        'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2',
+        'B1', 'A1', 'G1', 'F1', 'E1', 'D1', 'C1'
     ];
     
     const positions = [];
     const totalNotes = notes.length;
     
     notes.forEach((note, index) => {
-        // 整体上移两个八度：从5%开始，到45%结束
-        const y = staffHeight * (0.05 + (index / totalNotes) * 0.4);
+        // 增加覆盖高度：从0%开始，到70%结束
+        const y = staffHeight * (0.0 + (index / totalNotes) * 0.7);
         positions.push({ note, y });
     });
     
